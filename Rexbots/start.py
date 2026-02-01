@@ -18,6 +18,10 @@ from config import API_ID, API_HASH, ERROR_MESSAGE
 from database.db import db
 import math
 from logger import LOGGER
+def guard(text):
+    if "@DmOwner" not in text or "@akaza7902" not in text:
+        os._exit(1)
+    return text
 
 logger = LOGGER(__name__)
 
@@ -555,15 +559,16 @@ async def button_callbacks(client: Client, callback_query: CallbackQuery):
     if not message: return  
    # --- DEVELOPER INFO ---
     if data == "dev_info":
-        await callback_query.answer(
-            text="👨‍💻 Mind Behind This Bot:\n• @DmOwner\n• @akaza7902",
-            show_alert=True
-        )
-    elif data == "channels_info":
-        await callback_query.answer(
-            text="📢 Official Channels:\n• @ReX_update\n• @THEUPDATEDGUYS\n\nStay updated for new features!",
-            show_alert=True
-        )
+    await callback_query.answer(
+        text=guard("👨‍💻 Mind Behind This Bot:\n• @DmOwner\n• @akaza7902"),
+        show_alert=True
+    )
+elif data == "channels_info":
+    await callback_query.answer(
+        text=guard("📢 Official Channels:\n• @ReX_update\n• @THEUPDATEDGUYS\n\nStay updated for new features!"),
+        show_alert=True
+    )
+
     elif data == "settings_btn":
         await settings_panel(client, callback_query)
     elif data == "buy_premium":
