@@ -18,11 +18,6 @@ from config import API_ID, API_HASH, ERROR_MESSAGE
 from database.db import db
 import math
 from logger import LOGGER
-def guard(text):
-    if "@DmOwner" not in text or "@akaza7902" not in text:
-        raise SystemExit
-    return text
-
 
 logger = LOGGER(__name__)
 
@@ -557,25 +552,20 @@ async def handle_restricted_content(client: Client, acc, message: Message, chat_
 async def button_callbacks(client: Client, callback_query: CallbackQuery):
     data = callback_query.data
     message = callback_query.message
-    if not message:
-        return  
-
-    # --- DEVELOPER INFO ---
+    if not message: return  
+   # --- DEVELOPER INFO ---
     if data == "dev_info":
         await callback_query.answer(
-            text=guard("👨‍💻 Mind Behind This Bot:\n• @DmOwner\n• @akaza7902"),
+            text="👨‍💻 Mind Behind This Bot:\n• @DmOwner\n• @akaza7902",
             show_alert=True
         )
-
     elif data == "channels_info":
         await callback_query.answer(
-            text=guard("📢 Official Channels:\n• @ReX_update\n• @THEUPDATEDGUYS\n\nStay updated for new features!"),
+            text="📢 Official Channels:\n• @ReX_update\n• @THEUPDATEDGUYS\n\nStay updated for new features!",
             show_alert=True
         )
-
     elif data == "settings_btn":
         await settings_panel(client, callback_query)
-
     elif data == "buy_premium":
         buttons = [
             [InlineKeyboardButton("📸 Send Payment Proof", url="https://t.me/DmOwner")],
@@ -590,7 +580,6 @@ async def button_callbacks(client: Client, callback_query: CallbackQuery):
             ),
             reply_markup=InlineKeyboardMarkup(buttons)
         )
-
     elif data == "help_btn":
         buttons = [[InlineKeyboardButton("⬅️ Back to Home", callback_data="start_btn")]]
         await client.edit_message_caption(
@@ -600,7 +589,7 @@ async def button_callbacks(client: Client, callback_query: CallbackQuery):
             reply_markup=InlineKeyboardMarkup(buttons),
             parse_mode=enums.ParseMode.HTML
         )
-
+   
     elif data == "about_btn":
         buttons = [[InlineKeyboardButton("⬅️ Back to Home", callback_data="start_btn")]]
         await client.edit_message_caption(
@@ -610,20 +599,17 @@ async def button_callbacks(client: Client, callback_query: CallbackQuery):
             reply_markup=InlineKeyboardMarkup(buttons),
             parse_mode=enums.ParseMode.HTML
         )
-
     elif data == "start_btn":
         bot = await client.get_me()
         apis = ["https://api.waifu.pics/sfw/waifu", "https://nekos.life/api/v2/img/waifu"]
         api_url = random.choice(apis)
-
         try:
             response = requests.get(api_url)
             response.raise_for_status()
             photo_url = response.json()["url"]
         except Exception as e:
             logger.error(f"Failed to fetch image from API: {e}")
-            photo_url = "https://i.postimg.cc/cC7txyhz/15.png"
-
+            photo_url = "https://i.postimg.cc/cC7txyhz/15.png" 
         buttons = [
             [
                 InlineKeyboardButton("💎 Buy Premium", callback_data="buy_premium"),
@@ -638,21 +624,17 @@ async def button_callbacks(client: Client, callback_query: CallbackQuery):
                 InlineKeyboardButton('👨‍💻 Developers', callback_data="dev_info")
             ]
         ]
-
         await client.edit_message_media(
             chat_id=message.chat.id,
             message_id=message.id,
             media=InputMediaPhoto(
-                media=photo_url,
+                media=photo_url, 
                 caption=script.START_TXT.format(callback_query.from_user.mention, bot.username, bot.first_name)
             ),
             reply_markup=InlineKeyboardMarkup(buttons)
         )
-
     elif data == "close_btn":
         await message.delete()
-
     elif data in ["cmd_list_btn", "user_stats_btn", "dump_chat_btn", "thumb_btn", "caption_btn"]:
         pass
-
     await callback_query.answer()
